@@ -18,8 +18,6 @@ def main():
     print(sys.argv)
     print(args)
 
-
-
     data = pickle.load(open(args.filename, 'rb'))
     n_perms = data['n_perms']
     if data['data'] == 'prostate':
@@ -65,34 +63,26 @@ def main():
         for bb, pvalue in zip(b, pvalues):
             print(bb, pvalue)
 
-    pvalues_sorted = np.sort(pvalues)
+    # Sort pvalues and b by ordering of former.
+    sorted_indices = np.argsort(pvalues)
+    pvalues_sorted = pvalues[sorted_indices]
+    b_sorted = b[sorted_indices]
+
+    zero_b_indices = np.where(b_sorted == 0.)
+    non_zero_b_indices = np.where(b_sorted != 0.)
+
     theoretical_pvalues = np.linspace(0., 1., len(pvalues_sorted) + 2)[1:-1]
 
-    plt.scatter(theoretical_pvalues, pvalues_sorted, s=8.)
-    #plt.scatter(theoretical_pvalues, pvalues_sorted, edgecolors='black')
+    plt.scatter(theoretical_pvalues[zero_b_indices], pvalues_sorted[zero_b_indices], s=8., label='non zero betas (true)')
+    plt.scatter(theoretical_pvalues[non_zero_b_indices], pvalues_sorted[non_zero_b_indices], color='red', s=8., label='zero betas (true)')
+
     plt.plot([0., theoretical_pvalues.max()], [0., theoretical_pvalues.max()], 'k:', linewidth=.5)
     plt.grid()
-    #plt.savefig('plot.jpg')
+    plt.legend()
+    plt.title('simulated data')
+    plt.xlabel('theoretical pvalues')
+    plt.ylabel('empirical pvalues')
     plt.show()
-
-
-    #import statsmodels.api as sm
-    #import scipy.stats
-    #plt.figure()
-    #sm.qqplot(pvalues_sorted, dist=scipy.stats.uniform, line='45')
-    #plt.grid()
-    #plt.show()
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     main()

@@ -18,10 +18,10 @@ def plot_toy(lam_list, freqs_list, b):
     plt.grid()
     plt.show()
 
-def generate_data(n, p, noise_var=1.):
+def generate_data(n, p, n_b=1, noise_var=1.):
     X = np.random.normal(size=[n, p])
     b = np.zeros(p)
-    b[:1] = 1.
+    b[:n_b] = 1.
     np.random.shuffle(b)
 
     e = np.random.normal(scale=noise_var**.5, size=n)
@@ -32,10 +32,10 @@ def generate_data(n, p, noise_var=1.):
 
 def toy_example(n=200, p=200, n_bootstraps=100,
                 lam_low=.001, lam_high=.5, n_lams=100,
-                noise_var=.6, weakness=.2):
+                n_b=1, noise_var=.6, weakness=.2):
     lam_list = np.linspace(lam_low, lam_high, n_lams)
 
-    X, y, b = generate_data(n, p, noise_var=noise_var)
+    X, y, b = generate_data(n, p, n_b=n_b, noise_var=noise_var)
     X = scale(X)
 
     freqs_list = stability_selection(X, y, b, n_bootstraps, lam_list, weakness=weakness)
@@ -51,6 +51,7 @@ if __name__ == '__main__':
     parser.add_argument('--lam_low', type=float, default=.001)
     parser.add_argument('--lam_high', type=float, default=.5)
     parser.add_argument('--n_lams', type=int, default=100)
+    parser.add_argument('--n_b', type=int, default=1)
     parser.add_argument('--noise_var', type=float, default=.6)
     parser.add_argument('--weakness', type=float, default=.2)
 
@@ -65,5 +66,6 @@ if __name__ == '__main__':
                 lam_low=args.lam_low,
                 lam_high=args.lam_high,
                 n_lams=args.n_lams,
+                n_b=args.n_b,
                 noise_var=args.noise_var,
                 weakness=args.weakness)

@@ -8,6 +8,7 @@ import argparse
 from stability_selection import stability_selection
 
 from utils import get_area, load_prostate
+import datetime
 
 def prostate(n_bootstraps=100, n_perms=100, lam_low=.001,
              lam_high=.5, n_lams=100, weakness=.2):
@@ -34,7 +35,8 @@ def prostate(n_bootstraps=100, n_perms=100, lam_low=.001,
                'n_perms': n_perms,
                'areas_list': areas_list}
     
-    filename = str(uuid.uuid4()) + '_prostate.pickle'
+    filename = str(datetime.datetime.now()).replace(' ', ',') +\
+               '_' + str(uuid.uuid4()) + '_prostate.pickle'
     pickle.dump(results, open(filename, 'wb'))
 
 
