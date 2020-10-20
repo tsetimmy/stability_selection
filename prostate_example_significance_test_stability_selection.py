@@ -6,30 +6,12 @@ sys.path.append('..')
 import argparse
 
 from stability_selection import stability_selection
-from significance_lasso.scale import scale
 
-from utils import get_area
+from utils import get_area, load_prostate
 
 def prostate(n_bootstraps=100, n_perms=100, lam_low=.001,
              lam_high=.5, n_lams=100, weakness=.2):
-    data = np.loadtxt('../significance_lasso/prostate.data', skiprows=1, usecols=(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
-
-    train_indices = np.where(data[:, -1] == 1.)[0]
-    test_indices = np.where(data[:, -1] == 0.)[0]
-
-    y_train = data[train_indices, 8]
-    y_test = data[test_indices, 8]
-
-    global_scale = True
-
-    if global_scale:
-        X_scaled = scale(data[:, :8])
-        X_train = X_scaled[train_indices, :]
-        X_test = X_scaled[test_indices, :]
-    else:
-        X_train = data[train_indices, :8]
-        X_test = data[test_indices, :8]
-        X_train = scale(X_train)
+    X_train, y_train, X_test, y_test = load_prostate()
 
     lam_list = np.linspace(lam_low, lam_high, n_lams)
 
