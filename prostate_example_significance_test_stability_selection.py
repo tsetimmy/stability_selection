@@ -33,6 +33,7 @@ def prostate(n_bootstraps=100, n_perms=100, lam_low=.001,
 
     results = {'data': 'prostate',
                'n_perms': n_perms,
+               'weakness': weakness,
                'areas_list': areas_list}
     
     filename = str(datetime.datetime.now()).replace(' ', ',') +\

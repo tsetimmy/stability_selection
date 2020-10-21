@@ -44,6 +44,7 @@ def toy(n=200, p=200, n_bootstraps=100,
                'b': b,
                'n_b': n_b,
                'n_perms': n_perms,
+               'weakness': weakness,
                'areas_list': areas_list}
 
     filename = str(datetime.datetime.now()).replace(' ', ',') +\
