@@ -73,8 +73,8 @@ def main():
 
     theoretical_pvalues = np.linspace(0., 1., len(pvalues_sorted) + 2)[1:-1]
 
-    plt.scatter(theoretical_pvalues[zero_b_indices], pvalues_sorted[zero_b_indices], s=8., label='non zero betas (true)')
-    plt.scatter(theoretical_pvalues[non_zero_b_indices], pvalues_sorted[non_zero_b_indices], color='red', s=8., label='zero betas (true)')
+    plt.scatter(theoretical_pvalues[zero_b_indices], pvalues_sorted[zero_b_indices], s=8., label='zero betas (true)')
+    plt.scatter(theoretical_pvalues[non_zero_b_indices], pvalues_sorted[non_zero_b_indices], color='red', s=8., label='non-zero betas (true)')
 
     plt.plot([0., theoretical_pvalues.max()], [0., theoretical_pvalues.max()], 'k:', linewidth=.5)
     plt.grid()
@@ -82,7 +82,13 @@ def main():
     plt.title('simulated data')
     plt.xlabel('theoretical pvalues')
     plt.ylabel('empirical pvalues')
-    plt.show()
+    #plt.show()
+    plt.savefig(str(data['n_b']) + '.jpg')
+
+    print('b', data['b'])
+    print('n_b', data['n_b'])
+    print('n_perms', data['n_perms'])
+    print('weakness', data['weakness'])
 
 if __name__ == '__main__':
     main()

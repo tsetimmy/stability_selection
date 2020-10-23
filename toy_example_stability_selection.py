@@ -11,10 +11,14 @@ from significance_lasso.scale import scale
 import matplotlib.pyplot as plt
 
 def plot_toy(lam_list, freqs_list, b):
-    plt.plot(lam_list, freqs_list.T[np.where(b == 0.)].T, 'k:', linewidth=.5)
-    plt.plot(lam_list, freqs_list.T[np.where(b == 1.)].T, 'r-', linewidth=1.)
-    print(np.where(b == 0.))
-    print(np.where(b == 1.))
+    zeros = np.where(b == 0.)
+    non_zeros = np.where(b == 1.)
+    if zeros[0].size > 0:
+        plt.plot(lam_list, freqs_list.T[zeros].T, 'k:', linewidth=.5)
+    if non_zeros[0].size > 0:
+        plt.plot(lam_list, freqs_list.T[non_zeros].T, 'r-', linewidth=1.)
+    plt.xlabel('lambdas')
+    plt.ylabel('frequency')
     plt.grid()
     plt.show()
 
