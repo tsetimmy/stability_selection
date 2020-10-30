@@ -201,7 +201,7 @@ def diagnostic2():
     sns.distplot(b_hat[:, 0], label='original')
     sns.distplot(b_hat2[:, 0], label='noise')
     sns.distplot(b_hat3[:, 0], label='permuted')
-    plt.xlabel('x0')
+    plt.xlabel('b_hat_1')
     plt.ylabel('frequency')
     plt.legend()
     plt.grid()
@@ -211,7 +211,7 @@ def diagnostic2():
     sns.distplot(b_hat[:, 1], label='original')
     sns.distplot(b_hat2[:, 1], label='noise')
     sns.distplot(b_hat3[:, 1], label='permuted')
-    plt.xlabel('x1')
+    plt.xlabel('b_hat_2')
     plt.grid()
 
     plt.suptitle('frequency of b_hat')
@@ -271,8 +271,46 @@ def diagnostic3():
 
     plt.show()
 
+def diagnostic4():
+    n = 200
+    p = 2
+    noise_var = .01
+
+    lam = 0.0060404
+
+    n_bootstraps = 100
+
+    b_hat = []
+    b_hat2 = []
+    for _ in range(n_bootstraps):
+        X, y, _, _, _ = generate_data2(n, p, noise_var=noise_var)
+        X1 = X[:, 1:]
+
+        clf = Lasso(alpha=lam, max_iter=5000)
+        clf.fit(X, y)
+        b_hat.append(clf.coef_)
+
+        clf2 = Lasso(alpha=lam, max_iter=5000)
+        clf2.fit(X1, y)
+        b_hat2.append(clf2.coef_)
+    b_hat = np.array(b_hat)
+    b_hat2 = np.array(b_hat2)
+
+    import seaborn as sns
+    sns.distplot(b_hat[:, 0], label=r'original ($\beta_1$)')
+    sns.distplot(b_hat[:, 1], label=r'original ($\beta_2$)')
+    sns.distplot(b_hat2, label=r'noise ($\beta_2$)')
+
+    plt.xlabel('b_hat')
+    plt.ylabel('frequency')
+    plt.legend()
+    plt.grid()
+    #plt.show()
+    plt.savefig('test_area_hist2.jpg')
+
 if __name__ == '__main__':
     #main()
     #diagnostic()
-    #diagnostic2()
-    diagnostic3()
+    diagnostic2()
+    #diagnostic3()
+    #diagnostic4()
