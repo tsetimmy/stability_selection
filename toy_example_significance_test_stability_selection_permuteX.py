@@ -31,14 +31,28 @@ def toy(n=200, p=50, n_bootstraps=100,
 
     areas_list = [areas]
 
-    y_perm = y.copy()
-    for perm in range(n_perms):
-        print(perm, 'out of:', n_perms)
-        np.random.shuffle(y_perm)
-        freqs_list = stability_selection(X, y_perm, b, n_bootstraps, lam_list, weakness=weakness)
-        areas = np.array([get_area(lam_list, freq) for freq in freqs_list.T])
+    areas_list_permuted_X = np.zeros([p, n_perms])
+    for i in range(p):
+        left = X[:, :i]
+        mid = X[:, i]
+        right = X[:, i+1:]
 
-        areas_list.append(areas)
+        mid_perm = mid.copy()
+
+        for perm in range(n_perms):
+            print(i, 'out of:', p, perm, 'out of:', n_perms)
+
+            np.random.shuffle(mid_perm)
+
+            X_perm = np.concatenate([left, np.expand_dims(mid_perm, axis=-1), right], axis=-1)
+
+            freqs_list = stability_selection(X_perm, y, b, n_bootstraps, lam_list, weakness=weakness)
+            areas = np.array([get_area(lam_list, freq) for freq in freqs_list.T])
+
+            assert len(areas) == p
+            areas_list_permuted_X[i, perm] = areas[i]
+
+    areas_list = areas_list + list(areas_list_permuted_X.T)
 
     results = {'data': 'toy',
                'b': b,
@@ -48,7 +62,7 @@ def toy(n=200, p=50, n_bootstraps=100,
                'areas_list': areas_list}
 
     filename = str(datetime.datetime.now()).replace(' ', ',') +\
-               '_' + str(uuid.uuid4()) + '_toy.pickle'
+               '_' + str(uuid.uuid4()) + '_toy_FineGrainedPermuteX.pickle'
     pickle.dump(results, open(filename, 'wb'))
 
 if __name__ == '__main__':
